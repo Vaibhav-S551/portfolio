@@ -1,0 +1,59 @@
+{
+  "name": "Vaibhav Satpute",
+  "title": "Full-Stack Developer",
+  "email": "vaibhav.satpute2494@gmail.com",
+  "phone": "+91-9172548359",
+  "location": "Pune Maharashtra",
+  "github": "https://github.com/Vaibhav-S551",
+  "linkedin": "https://www.linkedin.com/in/vaibhav-satpute-524334254",
+  "education": [
+    {
+      "degree": "B.Tech in Computer Science and Engineering",
+      "Honors" :"Honors in Artificial Intelligence",
+      "institution": "MIT",
+      "year": "2025",
+      "gpa": "8.86/10"
+    }
+  ],
+  "skills": [
+    "Java", "JavaScript", "Python", "React", "Node.js", "Express.js", "Spring Boot","Spring","CI/CD",
+    "MongoDB", "C", "TensorFlow", "Machine Learning", "Microserviceses", "Maven" , "Jenkins" ,
+    "REST APIs", "PostgreSQL", "Docker", "AWS", "Git", "Tailwind CSS", "HTML5" , "Bootstrap" , "Postman" ,"Junit"
+  ],
+  "experience": [
+    {
+      "role": "Java Full-Stack Developer",
+      "company": "Qspider.",
+      "duration": "1/2025 - 7/2025 ",
+      "description": "Building scalable web applications using React, Node.js , Java , Spring boot and AWS."
+    },
+    {
+      "role": "Frontend Engineer Intern",
+      "company": "Zidio Development",
+      "duration": "03/2024 - 06/2024",
+      "description": "Developed web application using React.js,Javascript,HTML5, CSS"
+    }
+  ],
+  "projects": [
+    {
+      "name": "AI Chat Platform",
+      "description": "Real-time AI-powered chat using OpenAI GPT, React and Socket.io",
+      "tech": ["React", "Node.js", "OpenAI", "Socket.io"]
+    },
+    {
+      "name": "E-Commerce Platform",
+      "description": "Full-featured MERN stack ecommerce with payments, orders and admin panel",
+      "tech": ["MongoDB", "Express", "React", "Node.js", "Stripe"]
+    },
+    {
+      "name": "Book Recommendation System",
+      "description": "Build a book recommendation System for recommending books based on the users choice with increasing 56% accuracy",
+      "tech": ["Python","Pandas" , "Numpy","ScikitLearn", "TensorFlow", "Flask", "React","Tailwind"]
+    }
+  ],
+  "certifications": [
+    "Java Full stack development",
+    "Java Basic Certificate",
+    "Software Engineer Intern Certificate"
+  ]
+}
