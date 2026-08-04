@@ -18,6 +18,7 @@ console.log('MONGODB_URI:', process.env.MONGODB_URI)
 
 const allowedOrigins = [
   'http://localhost:5173',
+  "https://portfolio-topaz-seven-g1w4cq7any.vercel.app",
   process.env.FRONTEND_URL
 ].filter(Boolean)
 
