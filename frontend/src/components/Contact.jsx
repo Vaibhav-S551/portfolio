@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import axios from 'axios'
 import { Send, Mail, MapPin, Github, Linkedin, MessageSquare, CheckCircle, AlertCircle } from 'lucide-react'
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
@@ -18,7 +19,7 @@ export default function Contact() {
     }
     setStatus('loading')
     try {
-      const res = await axios.post('/api/contact', form)
+     const res = await axios.post(`${API_URL}/api/contact`, form)
       if (res.data.success) {
         setStatus('success')
         setForm({ name: '', email: '', message: '' })

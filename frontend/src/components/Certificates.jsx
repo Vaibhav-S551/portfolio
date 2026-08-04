@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { Award, ExternalLink, AlertCircle, RefreshCw } from 'lucide-react'
+const API_URL = import.meta.env.VITE_API_URL;
 
 const demoCerts = [
   {
@@ -63,7 +64,7 @@ export default function Certificates() {
     setUsingDemo(false)
 
     try {
-      const res = await axios.get(`${BASE_URL}/api/certificates`)
+      const res = await axios.get(`${API_URL}/api/certificates`)
 
       if (
         res.data?.success &&
