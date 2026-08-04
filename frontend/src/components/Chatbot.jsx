@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import { MessageCircle, X, Send, Bot, User, Sparkles, RefreshCw } from 'lucide-react'
+const API_URL = import.meta.env.VITE_API_URL;
 
 const QUICK_ACTIONS = [
   { label: '🛠️ Skills', query: 'What are your skills?' },
@@ -72,7 +73,7 @@ export default function Chatbot() {
     setLoading(true)
 
     try {
-      const res = await axios.post('/api/chat', { message: text })
+     const res = await axios.post(`${API_URL}/api/chat`,{ message: text });
       const botMsg = {
         role: 'bot',
         text: res.data.reply || "I'm not sure about that. Try asking about my skills or projects!",
