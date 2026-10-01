@@ -1061,10 +1061,9 @@ export default function Chatbot() {
       | Chat API
       |--------------------------------------------------------------------------
       */
-
+      const API_URL = import.meta.env.VITE_API_URL || ''
       const res =
-        await axios.post(
-          '/api/chat',
+        await axios.post(`${API_URL}/api/chat`,
           {
             message:
               userText,

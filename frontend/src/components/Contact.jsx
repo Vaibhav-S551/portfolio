@@ -23,6 +23,7 @@ export default function Contact() {
     message: ''
   })
 
+  const API_URL = import.meta.env.VITE_API_URL || ''
   const [status, setStatus] = useState(null)
   const [errorMsg, setErrorMsg] = useState('')
 
@@ -71,7 +72,7 @@ export default function Contact() {
     setErrorMsg('')
 
     try {
-      const response = await axios.post('/api/contact', {
+      const response = await axios.post(`${API_URL}/api/contact`, {
         name,
         email,
         message

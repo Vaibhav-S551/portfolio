@@ -24,13 +24,14 @@ export default function Certificates() {
   const [error, setError] = useState(null)
   const [selectedCertificate, setSelectedCertificate] =
     useState(null)
+  const API_URL = import.meta.env.VITE_API_URL || ''  
 
   const fetchCertificates = async () => {
     try {
       setLoading(true)
       setError(null)
 
-      const response = await axios.get('/api/certificates')
+      const response = await axios.get(`${API_URL}/api/certificates`)
 
       console.log(
         'Certificates API response:',

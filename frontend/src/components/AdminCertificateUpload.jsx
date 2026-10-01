@@ -15,6 +15,8 @@ export default function AdminCertificateUpload() {
 
   const [message, setMessage] = useState("");
 
+  const API_URL = import.meta.env.VITE_API_URL || ''
+
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -56,10 +58,10 @@ export default function AdminCertificateUpload() {
 
       formData.append("image", image);
 
-      const response = await axios.post(
-        "/api/certificates",
-        formData
-      );
+     const res = await axios.post(
+  `${API_URL}/api/certificates`,
+  formData
+)
 
       console.log(
         "Certificate uploaded:",
