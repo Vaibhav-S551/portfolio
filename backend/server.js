@@ -2,33 +2,59 @@ require('dotenv').config()
 
 const dns = require('dns')
 
+// --------------------------------------------------
+// DNS CONFIGURATION
+// --------------------------------------------------
+
 // Fix MongoDB Atlas SRV DNS resolution
 dns.setServers(['8.8.8.8', '1.1.1.1'])
 dns.setDefaultResultOrder('ipv4first')
+
+// --------------------------------------------------
+// IMPORTS
+// --------------------------------------------------
 
 const express = require('express')
 const mongoose = require('mongoose')
 const cors = require('cors')
 const path = require('path')
 
+// --------------------------------------------------
+// ROUTES
+// --------------------------------------------------
+
 const contactRoutes = require('./routes/contact')
 const certificateRoutes = require('./routes/Certificates')
 const chatRoutes = require('./routes/chat')
 
+// --------------------------------------------------
+// APP
+// --------------------------------------------------
+
 const app = express()
 
 // --------------------------------------------------
-// CORS
+// CORS CONFIGURATION
 // --------------------------------------------------
+
+// Your Vercel frontend URL should be stored in Render
+// as FRONTEND_URL.
+//
+// Example:
+// FRONTEND_URL=https://portfolio-gdrc-7m742z57z-vaibhav-s551s-projects.vercel.app
 
 const allowedOrigins = [
   'http://localhost:5173',
+  'http://localhost:3000',
 
   // Older Vercel deployment
   'https://portfolio-topaz-seven-g1w4cq7any.vercel.app',
 
-  // Current Vercel deployment
+  // Previous Vercel deployment
   'https://portfolio-fareyr0j7-vaibhav-s551s-projects.vercel.app',
+
+  // Current Vercel deployment
+  'https://portfolio-gdrc-7m742z57z-vaibhav-s551s-projects.vercel.app',
 
   // Render environment variable
   process.env.FRONTEND_URL
@@ -39,8 +65,8 @@ console.log('Allowed Origins:', allowedOrigins)
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests without an Origin header
-      // such as Postman/server-to-server requests
+      // Allow requests without Origin.
+      // Useful for Postman, curl and server-to-server requests.
       if (!origin) {
         return callback(null, true)
       }
@@ -49,19 +75,28 @@ app.use(
         return callback(null, true)
       }
 
-      console.log('Blocked Origin:', origin)
+      console.log('❌ Blocked CORS Origin:', origin)
 
       return callback(new Error('Not allowed by CORS'))
     },
 
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    methods: [
+      'GET',
+      'POST',
+      'PUT',
+      'PATCH',
+      'DELETE',
+      'OPTIONS'
+    ],
 
     allowedHeaders: [
       'Content-Type',
       'Authorization'
     ],
 
-    credentials: true
+    credentials: false,
+
+    optionsSuccessStatus: 204
   })
 )
 
@@ -79,7 +114,9 @@ app.use(express.urlencoded({ extended: true }))
 
 app.use(
   '/uploads',
-  express.static(path.join(__dirname, 'uploads'))
+  express.static(
+    path.join(__dirname, 'uploads')
+  )
 )
 
 // --------------------------------------------------
@@ -97,7 +134,7 @@ app.use('/api/chat', chatRoutes)
 // --------------------------------------------------
 
 app.get('/api/health', (req, res) => {
-  res.json({
+  res.status(200).json({
     status: 'OK',
     message: 'Portfolio API running'
   })
@@ -110,7 +147,8 @@ app.get('/api/health', (req, res) => {
 app.use((req, res) => {
   res.status(404).json({
     success: false,
-    message: 'Route not found'
+    message: 'Route not found',
+    path: req.originalUrl
   })
 })
 
@@ -119,8 +157,9 @@ app.use((req, res) => {
 // --------------------------------------------------
 
 app.use((err, req, res, next) => {
-  console.error(err.stack)
+  console.error('❌ Server Error:', err.message)
 
+  // Multer file size error
   if (err.code === 'LIMIT_FILE_SIZE') {
     return res.status(400).json({
       success: false,
@@ -128,6 +167,7 @@ app.use((err, req, res, next) => {
     })
   }
 
+  // CORS error
   if (err.message === 'Not allowed by CORS') {
     return res.status(403).json({
       success: false,
