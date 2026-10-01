@@ -37,13 +37,8 @@ const app = express()
 // CORS CONFIGURATION
 // --------------------------------------------------
 
-// Your Vercel frontend URL should be stored in Render
-// as FRONTEND_URL.
-//
-// Example:
-// FRONTEND_URL=https://portfolio-gdrc-7m742z57z-vaibhav-s551s-projects.vercel.app
-
 const allowedOrigins = [
+  // Local development
   'http://localhost:5173',
   'http://localhost:3000',
 
@@ -53,25 +48,49 @@ const allowedOrigins = [
   // Previous Vercel deployment
   'https://portfolio-fareyr0j7-vaibhav-s551s-projects.vercel.app',
 
-  // Current Vercel deployment
+  // Previous/current deployment
   'https://portfolio-gdrc-7m742z57z-vaibhav-s551s-projects.vercel.app',
+
+  // Current Vercel deployment
+  'https://portfolio-gdrc-tan.vercel.app',
 
   // Render environment variable
   process.env.FRONTEND_URL
 ].filter(Boolean)
 
-console.log('Allowed Origins:', allowedOrigins)
+console.log('----------------------------------------')
+console.log('Allowed Origins:')
+console.log(allowedOrigins)
+console.log('----------------------------------------')
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests without Origin.
+
+      // Allow requests without an Origin header.
       // Useful for Postman, curl and server-to-server requests.
       if (!origin) {
         return callback(null, true)
       }
 
+      // Allow explicitly configured origins
       if (allowedOrigins.includes(origin)) {
+        console.log('✅ Allowed Origin:', origin)
+        return callback(null, true)
+      }
+
+      // Allow Vercel deployments for this portfolio.
+      //
+      // Example:
+      // https://portfolio-gdrc-tan.vercel.app
+      //
+      // This prevents CORS from breaking whenever Vercel
+      // generates another deployment URL.
+      const isPortfolioVercelOrigin =
+        /^https:\/\/portfolio-[a-z0-9-]+\.vercel\.app$/.test(origin)
+
+      if (isPortfolioVercelOrigin) {
+        console.log('✅ Allowed Vercel Origin:', origin)
         return callback(null, true)
       }
 
@@ -94,6 +113,8 @@ app.use(
       'Authorization'
     ],
 
+    // Your portfolio currently does not require
+    // cookie-based authentication.
     credentials: false,
 
     optionsSuccessStatus: 204
@@ -104,9 +125,17 @@ app.use(
 // BODY PARSERS
 // --------------------------------------------------
 
-app.use(express.json({ limit: '10mb' }))
+app.use(
+  express.json({
+    limit: '10mb'
+  })
+)
 
-app.use(express.urlencoded({ extended: true }))
+app.use(
+  express.urlencoded({
+    extended: true
+  })
+)
 
 // --------------------------------------------------
 // STATIC FILES
@@ -123,11 +152,20 @@ app.use(
 // API ROUTES
 // --------------------------------------------------
 
-app.use('/api/contact', contactRoutes)
+app.use(
+  '/api/contact',
+  contactRoutes
+)
 
-app.use('/api/certificates', certificateRoutes)
+app.use(
+  '/api/certificates',
+  certificateRoutes
+)
 
-app.use('/api/chat', chatRoutes)
+app.use(
+  '/api/chat',
+  chatRoutes
+)
 
 // --------------------------------------------------
 // HEALTH CHECK
@@ -175,7 +213,8 @@ app.use((err, req, res, next) => {
     })
   }
 
-  res.status(500).json({
+  // General server error
+  return res.status(500).json({
     success: false,
     message: err.message || 'Internal server error'
   })
@@ -194,13 +233,17 @@ const PORT = process.env.PORT || 5000
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
+
     console.log('✅ MongoDB connected')
 
     app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`)
+      console.log(
+        `🚀 Server running on port ${PORT}`
+      )
     })
   })
   .catch((err) => {
+
     console.error(
       '❌ MongoDB connection error:',
       err.message
