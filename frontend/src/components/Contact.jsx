@@ -72,11 +72,17 @@ export default function Contact() {
     setErrorMsg('')
 
     try {
-      const response = await axios.post(`${API_URL}/api/contact`, {
-        name,
-        email,
-        message
-      })
+      const response = await axios.post(
+        `${API_URL}/api/contact`,
+        {
+          name,
+          email,
+          message
+        },
+        {
+          timeout: 5000
+        }
+      )
 
       if (response.data?.success) {
         setStatus('success')
@@ -98,7 +104,7 @@ export default function Contact() {
 
       setErrorMsg(
         error.response?.data?.message ||
-          'Unable to send your message right now. Please try again.'
+        'Unable to send your message right now. Please try again.'
       )
     }
   }
@@ -337,7 +343,7 @@ export default function Contact() {
                 </div>
 
                 <span className="success-label">
-                  MESSAGE DELIVERED
+                  MESSAGE RECEIVED
                 </span>
 
                 <h3>
@@ -345,9 +351,9 @@ export default function Contact() {
                 </h3>
 
                 <p>
-                  Your message has been successfully sent.
-                  I'll review it and get back to you as soon
-                  as possible.
+                   Your message has been received successfully.
+  I'll review it and get back to you as soon
+  as possible.
                 </p>
 
                 <button
