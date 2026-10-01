@@ -1,123 +1,163 @@
-// AdminCertificateUpload.jsx
 import { useState } from "react";
 import axios from "axios";
 
-const BASE_URL = import.meta.env.VITE_API_URL || "https://portfolio-o3jz.onrender.com";
-
 export default function AdminCertificateUpload() {
-  const [title, setTitle] = useState("");
-  const [issuer, setIssuer] = useState("");
-  const [date, setDate] = useState("");
-  const [credentialUrl, setCredentialUrl] = useState("");
-  const [file, setFile] = useState(null);
+  const [form, setForm] = useState({
+    title: "",
+    issuer: "",
+    date: "",
+    credentialUrl: "",
+  });
+
+  const [image, setImage] = useState(null);
+
+  const [loading, setLoading] = useState(false);
+
   const [message, setMessage] = useState("");
+
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+
+    if (!file) {
+      return;
+    }
+
+    setImage(file);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!title || !issuer || !date || !file) {
-      setMessage("All required fields must be filled.");
+    if (!image) {
+      setMessage("Please select a certificate image.");
       return;
     }
 
-   const formData = new FormData();
-
-formData.append("title", title.trim());
-formData.append("issuer", issuer.trim());
-formData.append("date", date);
-formData.append("credentialUrl", credentialUrl.trim());
-formData.append("image", file);
-
-console.log([...formData.entries()]);
-
     try {
-      const res = await axios.post(
-        `${BASE_URL}/api/certificates`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+      setLoading(true);
+      setMessage("");
+
+      const formData = new FormData();
+
+      formData.append("title", form.title);
+      formData.append("issuer", form.issuer);
+      formData.append("date", form.date);
+      formData.append(
+        "credentialUrl",
+        form.credentialUrl
       );
 
-      setMessage("Certificate uploaded successfully!");
+      formData.append("image", image);
 
-      setTitle("");
-      setIssuer("");
-      setDate("");
-      setCredentialUrl("");
-      setFile(null);
+      const response = await axios.post(
+        "/api/certificates",
+        formData
+      );
 
-      console.log(res.data);
-    } catch (err) {
-      console.error("UPLOAD ERROR:", err.response?.data || err.message);
+      console.log(
+        "Certificate uploaded:",
+        response.data
+      );
+
       setMessage(
-        err.response?.data?.message || "Upload failed. Check backend."
+        "Certificate uploaded successfully!"
       );
+
+      setForm({
+        title: "",
+        issuer: "",
+        date: "",
+        credentialUrl: "",
+      });
+
+      setImage(null);
+
+      document.getElementById(
+        "certificate-image"
+      ).value = "";
+    } catch (error) {
+      console.error(
+        "Certificate upload failed:",
+        error
+      );
+
+      setMessage(
+        error.response?.data?.message ||
+          "Certificate upload failed."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div style={{ padding: "30px", maxWidth: "600px", margin: "0 auto" }}>
-      <h2>Upload Certificate</h2>
+    <div>
+      <h2>Add Certificate</h2>
 
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Certificate Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          name="title"
+          placeholder="Certificate title"
+          value={form.title}
+          onChange={handleChange}
           required
         />
-
-        <br /><br />
 
         <input
           type="text"
+          name="issuer"
           placeholder="Issuer"
-          value={issuer}
-          onChange={(e) => setIssuer(e.target.value)}
+          value={form.issuer}
+          onChange={handleChange}
           required
         />
-
-        <br /><br />
 
         <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
+          type="text"
+          name="date"
+          placeholder="Date"
+          value={form.date}
+          onChange={handleChange}
           required
         />
-
-        <br /><br />
 
         <input
           type="url"
-          placeholder="Credential URL (optional)"
-          value={credentialUrl}
-          onChange={(e) => setCredentialUrl(e.target.value)}
+          name="credentialUrl"
+          placeholder="Credential URL"
+          value={form.credentialUrl}
+          onChange={handleChange}
         />
 
-        <br /><br />
-
         <input
+          id="certificate-image"
           type="file"
-          accept="image/*"
-          onChange={(e) => setFile(e.target.files[0])}
+          accept="image/png,image/jpeg,image/webp"
+          onChange={handleImageChange}
           required
         />
 
-        <br /><br />
+        <button
+          type="submit"
+          disabled={loading}
+        >
+          {loading
+            ? "Uploading..."
+            : "Upload Certificate"}
+        </button>
 
-        <button type="submit">Upload Certificate</button>
+        {message && (
+          <p>{message}</p>
+        )}
       </form>
-
-      {message && (
-        <p style={{ marginTop: "20px", fontWeight: "bold" }}>
-          {message}
-        </p>
-      )}
     </div>
   );
 }

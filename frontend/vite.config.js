@@ -1,16 +1,19 @@
-import { defineConfig } from 'vite'        // ← this line was missing
+import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
+
   server: {
     proxy: {
       '/api': {
-        target: 'https://portfolio-o3jz.onrender.com',
-        changeOrigin: true
+        target: 'http://localhost:5000',
+        changeOrigin: true ,
+        secure : false
       },
+
       '/uploads': {
-        target: 'https://portfolio-o3jz.onrender.com',
+        target: 'http://localhost:5000',
         changeOrigin: true
       }
     }
